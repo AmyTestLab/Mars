@@ -64,10 +64,46 @@ namespace SpecFlowProjectMars.Pages
             updateSkillButton.Click(); // Click the "Update" button to save the edited skill
         }
 
-        // Method to remove a skill
-        public void RemoveSkill()
-        {           
-            deleteSkillButton.Click(); // Click on the "Delete" button for the skill
+        // Method to remove only the test-specific skill
+        public void RemoveSkill(string skill = null)
+        {
+            try
+            {
+                // If a specific skill is passed in, find and remove that skill
+                if (!string.IsNullOrEmpty(skill))
+                {
+                    // Locate the row containing the skill to be deleted
+                    var skillRow = driver.FindElements(By.XPath($"//td[text()='{skill}']/../td[3]/span[2]/i")).FirstOrDefault();
+                    if (skillRow != null)
+                    {
+                        // Click the delete button for that skill
+                        skillRow.Click();
+                        Console.WriteLine($"{skill} removed successfully.");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Skill '{skill}' not found for removal.");
+                    }
+                }
+                else
+                {
+                    // Default behavior: Remove the first skill found
+                    var deleteButton = driver.FindElements(By.CssSelector("i[class='remove icon']")).FirstOrDefault();
+                    if (deleteButton != null)
+                    {
+                        deleteButton.Click();
+                        Console.WriteLine("Skill removed successfully.");
+                    }
+                    else
+                    {
+                        Console.WriteLine("No skill found to remove.");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error occurred while removing skill: {ex.Message}");
+            }
         }
         // Before each scenario: Clear all skills to ensure a clean state
         [BeforeScenario]

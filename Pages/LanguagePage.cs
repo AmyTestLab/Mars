@@ -105,22 +105,32 @@ namespace SpecFlowProjectMars.Pages
                 Console.WriteLine($"Error occurred while editing language: {ex.Message}");
             }
         }
-
-        // Method to remove a language
-        public void RemoveLanguage()
+        // Modify the cleanup method to delete only the data that the test created
+        public void RemoveLanguage(string language = null)
         {
             try
             {
-                // Click to remove the language
-                Console.WriteLine("Clicking 'Delete' to remove the language...");
-                deleteLangButton.Click();
-                Console.WriteLine("Language removed successfully.");
+                // If a specific language is passed in, delete only that language
+                if (!string.IsNullOrEmpty(language))
+                {
+                    IWebElement languageRow = driver.FindElement(By.XPath($"//td[text()='{language}']/../td[3]/span[2]/i"));
+                    languageRow.Click();
+                    Console.WriteLine($"{language} removed successfully.");
+                }
+                else
+                {
+                    // Default behavior: remove the first found language
+                    deleteLangButton.Click();
+                    Console.WriteLine("Language removed successfully.");
+                }
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error occurred while removing language: {ex.Message}");
             }
         }
+
+
 
 
         // Before each scenario: Clear all languages to ensure a clean state
